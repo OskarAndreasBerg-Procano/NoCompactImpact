@@ -1,0 +1,11 @@
+{
+  "name": "context-relay",
+  "description": "Keeps long Claude Code tasks alive across context compaction. Before the context compacts it archives the transcript and writes a handoff; after compaction it re-injects the handoff so the model continues the task instead of stalling. A 95% monitor preserves work eagerly. Cross-platform (Node, no extra deps).",
+  "version": "1.0.0",
+  "author": {
+    "name": "Oskar Andreas Berg"
+  },
+  "homepage": "https://github.com/OskarAndreasBerg-Procano/NoCompactImpact",
+  "repository": "https://github.com/OskarAndreasBerg-Procano/NoCompactImpact",
+  "keywords": ["context", "compaction", "auto-compact", "hooks", "long-tasks", "handoff"]
+}

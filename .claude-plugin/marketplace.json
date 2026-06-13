@@ -1,0 +1,15 @@
+{
+  "name": "nocompactimpact",
+  "owner": {
+    "name": "Oskar Andreas Berg",
+    "url": "https://github.com/OskarAndreasBerg-Procano"
+  },
+  "plugins": [
+    {
+      "name": "context-relay",
+      "source": "./plugins/context-relay",
+      "description": "Keeps long Claude Code tasks alive across context compaction (auto handoff + resume).",
+      "version": "1.0.0"
+    }
+  ]
+}
