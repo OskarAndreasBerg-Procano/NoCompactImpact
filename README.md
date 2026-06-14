@@ -3,98 +3,70 @@
 A Claude Code plugin that keeps long-running tasks alive across context compaction.
 
 When the context window fills, Claude Code compacts the conversation, and long tasks
-often stall at that point. This repository distributes the `context-relay` plugin, which
-captures a handoff of the in-progress work just before compaction and re-injects it
-immediately afterward, so the model resumes the task instead of stopping.
+often stall at that point. This plugin captures a handoff of the in-progress work just
+before compaction and re-injects it immediately afterward, so the model resumes the task
+instead of stopping.
 
-## Features
+For configuration, internals, and development, see [INFO.md](INFO.md).
 
-- Automatic handoff around every compaction — auto-compact, `/compact`, and `/clear`.
-- Timestamped transcript archive written before each compaction.
-- Eager 95% monitor that preserves work as the context approaches the limit.
-- Cross-platform: implemented in Node (Claude Code's own runtime), with no `jq`,
-  PowerShell, bash, or other external dependencies. Identical on Windows, macOS, and Linux.
-- Fails safe: hooks never block compaction and never corrupt session start.
+## Getting started
 
-## Requirements
+### Prerequisites
 
-- Claude Code with the `/plugin` command.
-- `node` on `PATH` (present in any npm-based Claude Code install).
-- Auto-compact enabled (see [Installation](#installation)).
+- Claude Code, up to date — the `/plugin` command must be available. Update Claude Code
+  if it is not.
+- `node` on `PATH` — included with any npm-based Claude Code install. Check with
+  `node --version`.
+- No GitHub account or access grant is required; this repository is public.
 
-## Installation
+### 1. Add the marketplace
 
-```shell
+```
 /plugin marketplace add OskarAndreasBerg-Procano/NoCompactImpact
+```
+
+### 2. Install the plugin
+
+```
 /plugin install context-relay@nocompactimpact
 ```
 
-Then complete two one-time steps:
+The format is `plugin@marketplace`: the plugin is `context-relay`, the marketplace is
+`nocompactimpact`.
 
-1. Enable auto-compact: `/config` → toggle **Auto-compact**, or set
-   `"autoCompactEnabled": true` in `~/.claude/settings.json`. Plugins cannot set this
-   user-level option, and the automatic loop depends on it.
-2. Restart Claude Code so the hooks load.
+### 3. Enable auto-compact
 
-The plugin is then active for every project on the machine. Disable or uninstall it at
-any time via `/plugin`.
+The plugin cannot set this for you, and the automatic loop depends on it. Either:
 
-## Configuration
+- run `/config` and toggle **Auto-compact** on, or
+- add `"autoCompactEnabled": true` to `~/.claude/settings.json`.
 
-All settings are optional and read from environment variables. Set them under `env` in
-`~/.claude/settings.json` to make them permanent.
+### 4. Restart Claude Code
 
-| Variable | Default | Description |
-| --- | --- | --- |
-| `RELAY_COMPACT_THRESHOLD` | `0.95` | Context-fill fraction that triggers the eager pre-compaction handoff. |
-| `RELAY_THROTTLE_SECONDS` | `120` | Minimum seconds between eager handoffs. |
-| `RELAY_MARKER_MAX_AGE_MIN` | `20` | Maximum age of a pre-compaction handoff eligible for re-injection. |
-| `RELAY_MONITOR_MAX_AGE_MIN` | `5` | Shorter re-injection window for monitor-written handoffs. |
-| `CLAUDE_CONTEXT_WINDOW` | `200000` | Token count treated as 100% when computing fill. |
+Hooks load at session start.
 
-## How it works
+## Usage
 
-| Stage | Mechanism |
+There is nothing to run. The plugin works in the background: when the context fills and
+compacts, your in-progress task is preserved beforehand and resumed afterward.
+
+## Verifying it works
+
+- Run `/plugin` and confirm **context-relay** is listed and enabled.
+- After a session that compacts, check the log:
+  - macOS / Linux: `tail ~/.claude/context-relay/*/relay.log`
+  - Windows (PowerShell): `Get-Content "$env:USERPROFILE\.claude\context-relay\*\relay.log" -Tail 10`
+  - Expect `handoff saved` followed by `post-compaction context injected`.
+
+## Managing the plugin
+
+- Disable, re-enable, or uninstall: `/plugin`.
+- Update to a newer version: `/plugin marketplace update`, then reinstall.
+
+## Troubleshooting
+
+| Symptom | Fix |
 | --- | --- |
-| Before compaction | A `PreCompact` hook archives the transcript and writes a handoff. |
-| Near the limit | A `PostToolUse` monitor runs the handoff early once fill crosses the threshold. |
-| After compaction | A `SessionStart` hook re-injects the handoff so the task continues. |
-
-Working files are written per project to `~/.claude/context-relay/<project>/` (transcript
-archives, the latest handoff, and `relay.log`). To confirm the plugin is active, tail
-`relay.log` after a compaction; it records each `handoff saved` and
-`post-compaction context injected` event.
-
-## Repository layout
-
-```
-.
-├── .claude-plugin/
-│   └── marketplace.json            # marketplace catalog
-└── plugins/
-    └── context-relay/
-        ├── .claude-plugin/
-        │   └── plugin.json         # plugin manifest
-        ├── hooks/
-        │   └── hooks.json          # hook registration
-        ├── scripts/                # Node implementation
-        │   ├── relay-lib.mjs
-        │   ├── pre-compact.mjs
-        │   ├── session-start.mjs
-        │   └── context-monitor.mjs
-        └── README.md               # plugin reference
-```
-
-## Development
-
-Load and validate the plugin locally, without publishing:
-
-```shell
-claude --plugin-dir ./plugins/context-relay
-claude plugin validate ./plugins/context-relay
-```
-
-## Releasing updates
-
-Bump `version` in `plugins/context-relay/.claude-plugin/plugin.json`, commit, and push.
-Users update with `/plugin marketplace update`, then reinstall.
+| `/plugin` not recognized | Update Claude Code. |
+| Install error mentioning `node` | Ensure `node` is on `PATH`. |
+| Nothing appears in `relay.log` | Confirm auto-compact is enabled (step 3) and that you restarted Claude Code. |
