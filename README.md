@@ -11,6 +11,11 @@ For configuration, internals, and development, see [INFO.md](INFO.md).
 
 ## Getting started
 
+> The `/...` commands below are typed **inside Claude Code** (at its chat prompt) — not in
+> your regular terminal, and not on GitHub. **Start Claude Code first:** run `claude` in a
+> terminal, or open the Claude Code panel in your IDE (VS Code / JetBrains). That prompt is
+> where these commands go.
+
 ### Prerequisites
 
 - Claude Code, up to date — the `/plugin` command must be available. Update Claude Code
@@ -19,29 +24,32 @@ For configuration, internals, and development, see [INFO.md](INFO.md).
   `node --version`.
 - No GitHub account or access grant is required; this repository is public.
 
-### 1. Add the marketplace
+### 1. Add the marketplace and install the plugin
+
+At the Claude Code prompt, run these two commands:
 
 ```
 /plugin marketplace add OskarAndreasBerg-Procano/NoCompactImpact
-```
-
-### 2. Install the plugin
-
-```
 /plugin install context-relay@nocompactimpact
 ```
 
-The format is `plugin@marketplace`: the plugin is `context-relay`, the marketplace is
-`nocompactimpact`.
+(The format is `plugin@marketplace`: the plugin is `context-relay`, the marketplace is
+`nocompactimpact`.)
 
-### 3. Enable auto-compact
+Prefer menus? Type `/plugin` on its own to open the plugin manager, then follow the
+prompts to add the marketplace and install `context-relay`.
+
+### 2. Enable auto-compact
 
 The plugin cannot set this for you, and the automatic loop depends on it. Either:
 
 - run `/config` and toggle **Auto-compact** on, or
 - add `"autoCompactEnabled": true` to `~/.claude/settings.json`.
 
-### 4. Restart Claude Code
+(Many setups already have auto-compact on by default — in that case this is just a quick
+check, nothing to change.)
+
+### 3. Restart Claude Code
 
 Hooks load at session start.
 
@@ -69,4 +77,4 @@ compacts, your in-progress task is preserved beforehand and resumed afterward.
 | --- | --- |
 | `/plugin` not recognized | Update Claude Code. |
 | Install error mentioning `node` | Ensure `node` is on `PATH`. |
-| Nothing appears in `relay.log` | Confirm auto-compact is enabled (step 3) and that you restarted Claude Code. |
+| Nothing appears in `relay.log` | Confirm auto-compact is enabled (step 2) and that you restarted Claude Code. |
