@@ -26,15 +26,17 @@ For configuration, internals, and development, see [INFO.md](INFO.md).
 
 ### 1. Add the marketplace and install the plugin
 
-At the Claude Code prompt, run these two commands:
+At the Claude Code prompt, run these two commands, one at a time:
 
 ```
-/plugin marketplace add OskarAndreasBerg-Procano/NoCompactImpact
+/plugin marketplace add https://github.com/OskarAndreasBerg-Procano/NoCompactImpact.git
 /plugin install context-relay@nocompactimpact
 ```
 
 (The format is `plugin@marketplace`: the plugin is `context-relay`, the marketplace is
-`nocompactimpact`.)
+`nocompactimpact`. The HTTPS URL needs no GitHub login or SSH setup; the shorthand
+`OskarAndreasBerg-Procano/NoCompactImpact` also works if you have SSH configured for
+GitHub.)
 
 Prefer menus? Type `/plugin` on its own to open the plugin manager, then follow the
 prompts to add the marketplace and install `context-relay`.
@@ -76,5 +78,6 @@ compacts, your in-progress task is preserved beforehand and resumed afterward.
 | Symptom | Fix |
 | --- | --- |
 | `/plugin` not recognized | Update Claude Code. |
+| `Host key verification failed` / SSH error when adding the marketplace | Use the HTTPS URL (`https://github.com/OskarAndreasBerg-Procano/NoCompactImpact.git`) instead of the `owner/repo` shorthand. |
 | Install error mentioning `node` | Ensure `node` is on `PATH`. |
 | Nothing appears in `relay.log` | Confirm auto-compact is enabled (step 2) and that you restarted Claude Code. |
