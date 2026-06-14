@@ -7,30 +7,32 @@ often stall at that point. This plugin captures a handoff of the in-progress wor
 before compaction and re-injects it immediately afterward, so the model resumes the task
 instead of stopping.
 
-For configuration, internals, and development, see [INFO.md](INFO.md).
+## Install in Claude Code
 
-## Quick install
-
-Inside **Claude Code** (at its chat prompt — not your terminal), run these two commands:
+Inside **Claude Code** — at its chat prompt, not your regular terminal — run these two
+commands:
 
 ```
 /plugin marketplace add https://github.com/OskarAndreasBerg-Procano/NoCompactImpact.git
 /plugin install context-relay@nocompactimpact
 ```
 
-Then enable **Auto-compact** (run `/config`) and run `/reload-plugins` to activate the
-hooks (no restart needed). That's it — it runs automatically from your next compaction
-onward.
+Then:
 
-Prefer a menu, or want the full explanation and troubleshooting? See
-[Getting started](#getting-started) below.
+1. Enable **Auto-compact** — run `/config` and toggle it on.
+2. Run `/reload-plugins` to activate the hooks (no restart needed).
 
-## Getting started
+That's it — it runs automatically from your next compaction onward.
 
-> The `/...` commands below are typed **inside Claude Code** (at its chat prompt) — not in
-> your regular terminal, and not on GitHub. **Start Claude Code first:** run `claude` in a
-> terminal, or open the Claude Code panel in your IDE (VS Code / JetBrains). That prompt is
-> where these commands go.
+<br>
+
+---
+
+<br>
+
+## Details and troubleshooting
+
+For configuration, internals, and development, see [INFO.md](INFO.md).
 
 ### Prerequisites
 
@@ -40,45 +42,25 @@ Prefer a menu, or want the full explanation and troubleshooting? See
   `node --version`.
 - No GitHub account or access grant is required; this repository is public.
 
-### 1. Add the marketplace and install the plugin
+### Notes on the install commands
 
-At the Claude Code prompt, run these two commands, one at a time:
+- The `/...` commands are typed inside Claude Code (its chat prompt). Start Claude Code
+  first: run `claude` in a terminal, or open the Claude Code panel in your IDE
+  (VS Code / JetBrains).
+- The HTTPS URL needs no GitHub login or SSH setup. The shorthand
+  `OskarAndreasBerg-Procano/NoCompactImpact` also works if you have SSH configured for
+  GitHub.
+- Prefer menus? Type `/plugin` on its own to open the plugin manager and add the
+  marketplace / install from there.
+- Many setups already have auto-compact on by default; in that case enabling it is just a
+  quick check, nothing to change.
 
-```
-/plugin marketplace add https://github.com/OskarAndreasBerg-Procano/NoCompactImpact.git
-/plugin install context-relay@nocompactimpact
-```
-
-(The format is `plugin@marketplace`: the plugin is `context-relay`, the marketplace is
-`nocompactimpact`. The HTTPS URL needs no GitHub login or SSH setup; the shorthand
-`OskarAndreasBerg-Procano/NoCompactImpact` also works if you have SSH configured for
-GitHub.)
-
-Prefer menus? Type `/plugin` on its own to open the plugin manager, then follow the
-prompts to add the marketplace and install `context-relay`.
-
-### 2. Enable auto-compact
-
-The plugin cannot set this for you, and the automatic loop depends on it. Either:
-
-- run `/config` and toggle **Auto-compact** on, or
-- add `"autoCompactEnabled": true` to `~/.claude/settings.json`.
-
-(Many setups already have auto-compact on by default — in that case this is just a quick
-check, nothing to change.)
-
-### 3. Activate the hooks
-
-Run `/reload-plugins` to load the plugin's hooks into your current session — no restart
-required. (A full restart of Claude Code also works.) The context monitor starts working
-immediately; the pre/post-compaction handoff runs at your next compaction.
-
-## Usage
+### Usage
 
 There is nothing to run. The plugin works in the background: when the context fills and
 compacts, your in-progress task is preserved beforehand and resumed afterward.
 
-## Verifying it works
+### Verifying it works
 
 - Run `/plugin` and confirm **context-relay** is listed and enabled.
 - After a session that compacts, check the log:
@@ -86,16 +68,16 @@ compacts, your in-progress task is preserved beforehand and resumed afterward.
   - Windows (PowerShell): `Get-Content "$env:USERPROFILE\.claude\context-relay\*\relay.log" -Tail 10`
   - Expect `handoff saved` followed by `post-compaction context injected`.
 
-## Managing the plugin
+### Managing the plugin
 
 - Disable, re-enable, or uninstall: `/plugin`.
 - Update to a newer version: `/plugin marketplace update`, then reinstall.
 
-## Troubleshooting
+### Troubleshooting
 
 | Symptom | Fix |
 | --- | --- |
 | `/plugin` not recognized | Update Claude Code. |
 | `Host key verification failed` / SSH error when adding the marketplace | Use the HTTPS URL (`https://github.com/OskarAndreasBerg-Procano/NoCompactImpact.git`) instead of the `owner/repo` shorthand. |
 | Install error mentioning `node` | Ensure `node` is on `PATH`. |
-| Nothing appears in `relay.log` | Confirm auto-compact is enabled (step 2) and that you ran `/reload-plugins` (or restarted). |
+| Nothing appears in `relay.log` | Confirm auto-compact is enabled and that you ran `/reload-plugins` (or restarted). |
