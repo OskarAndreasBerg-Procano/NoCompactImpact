@@ -18,8 +18,9 @@ Inside **Claude Code** (at its chat prompt — not your terminal), run these two
 /plugin install context-relay@nocompactimpact
 ```
 
-Then enable **Auto-compact** (run `/config`) and restart Claude Code. That's it — it now
-runs automatically.
+Then enable **Auto-compact** (run `/config`) and run `/reload-plugins` to activate the
+hooks (no restart needed). That's it — it runs automatically from your next compaction
+onward.
 
 Prefer a menu, or want the full explanation and troubleshooting? See
 [Getting started](#getting-started) below.
@@ -66,9 +67,11 @@ The plugin cannot set this for you, and the automatic loop depends on it. Either
 (Many setups already have auto-compact on by default — in that case this is just a quick
 check, nothing to change.)
 
-### 3. Restart Claude Code
+### 3. Activate the hooks
 
-Hooks load at session start.
+Run `/reload-plugins` to load the plugin's hooks into your current session — no restart
+required. (A full restart of Claude Code also works.) The context monitor starts working
+immediately; the pre/post-compaction handoff runs at your next compaction.
 
 ## Usage
 
@@ -95,4 +98,4 @@ compacts, your in-progress task is preserved beforehand and resumed afterward.
 | `/plugin` not recognized | Update Claude Code. |
 | `Host key verification failed` / SSH error when adding the marketplace | Use the HTTPS URL (`https://github.com/OskarAndreasBerg-Procano/NoCompactImpact.git`) instead of the `owner/repo` shorthand. |
 | Install error mentioning `node` | Ensure `node` is on `PATH`. |
-| Nothing appears in `relay.log` | Confirm auto-compact is enabled (step 2) and that you restarted Claude Code. |
+| Nothing appears in `relay.log` | Confirm auto-compact is enabled (step 2) and that you ran `/reload-plugins` (or restarted). |
