@@ -9,6 +9,21 @@ instead of stopping.
 
 For configuration, internals, and development, see [INFO.md](INFO.md).
 
+## Quick install
+
+Inside **Claude Code** (at its chat prompt — not your terminal), run these two commands:
+
+```
+/plugin marketplace add https://github.com/OskarAndreasBerg-Procano/NoCompactImpact.git
+/plugin install context-relay@nocompactimpact
+```
+
+Then enable **Auto-compact** (run `/config`) and restart Claude Code. That's it — it now
+runs automatically.
+
+Prefer a menu, or want the full explanation and troubleshooting? See
+[Getting started](#getting-started) below.
+
 ## Getting started
 
 > The `/...` commands below are typed **inside Claude Code** (at its chat prompt) — not in
